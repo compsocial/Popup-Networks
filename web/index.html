@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Bootstrap 101 Template</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Bootstrap -->
+    <link href="css/bootstrap.min.css" rel="stylesheet" media="screen">
+  </head>
+  <body>
+    <h1>Checking your system status...</h1>
+    <script src="js/jquery.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script>
+    	$.getJSON('api/users/me', function(response) {
+    		//console.log(response);
+    		if (!response.success) {
+    			//alert(response.message);
+    			document.location.href = '/apps/profile/editme.php';
+    		}
+    		else {
+    			document.location.href = '/apps/profile';
+    		}
+    	})
+    </script>
+  </body>
+</html>

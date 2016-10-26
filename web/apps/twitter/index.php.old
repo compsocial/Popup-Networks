@@ -1,0 +1,132 @@
+<?php
+require_once(__DIR__.'/../../lib/common.php');
+require_once(__DIR__.'/../../lib/db-mysqli.php');
+require_once('app_info.php');
+
+if ($_POST["submit"] == "submit") {
+	//$message = $_POST["tweetMessage"];
+	$result = postToUrl("http://localhost:{$_SERVER['SERVER_PORT']}/apps/$app_id/sendtweet.php", 
+		"tweetMessage={$_POST['tweetMessage']}");
+	//echo "<h1>result = $result</h1>";
+}
+?>
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Twitter: Hyperlocal Microblogging Service</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link href="../../css/pure-min.css" rel="stylesheet">
+	<link href="css/my.css" rel="stylesheet">
+</head>
+<body>
+	<script src="../../js/jquery.js"></script>
+	<script src="../../js/ICanHaz.min.js"></script>
+	
+	<script id="tweet_row" type="text/html">
+		<div class="tweet pure-g">
+            <div class="pure-u">
+                <img class="profile-pic" alt="{{user_name}}" src="" height="64" width="64" />
+            </div>
+
+            <div class="pure-u-3-4">
+                <h5 class="tweet-name">{{user_name}}</h5>
+                <p class="tweet-message">
+                    {{message}}
+                </p>
+            </div>
+        </div>
+	</script>
+	
+	<script type="text/javascript">
+	$(document).ready(function () {
+		$("#tweetMessage").bind("input propertychange", function () {
+			message = $(this).val();
+			if (message.length > 0) {
+				$("#sendTweet").removeClass("pure-button-disabled");
+			}
+			else {
+				$("#sendTweet").addClass("pure-button-disabled");
+			}
+		});
+		
+		$("#sendTweet").click(function () {
+			$("textarea#tweetMessage").attr("readonly", "readonly");
+			$("#sendTweet").addClass("pure-button-disabled");
+		});
+	});
+	</script>
+	
+	<div class="topbar">
+		<div class="pure-menu pure-menu-open pure-menu-horizontal fill container">
+				<a href="index.php" class="pure-menu-heading">Twitter</a>
+		
+				<ul>
+					<li class="pure-menu-selected"><a href="#">Feed</a></li>
+					<li><a href="nearby.php">Nearby</a></li>
+					<li><a href="#">Me</a></li>
+				</ul>
+		</div>
+	</div>
+		
+	<form id="sendTweetForm" class="pure-form pure-form-stacked" method="post">
+		<fieldset>
+			<textarea id="tweetMessage" name="tweetMessage" placeholder="What's going on?" rows=5 cols=80 maxlength=400></textarea>
+			
+			<button type="submit" id="sendTweet" name="submit" value="submit" class="pure-button pure-button-primary pure-button-disabled">Tweet</button>
+		</fieldset>
+	</form>
+	
+	<div id="feed" style="width:800px;">
+<?php
+$apiUrl = 'http://localhost:'.$_SERVER["SERVER_PORT"].'/api/apps/message';
+$apiUrl .= '?app_id='.$app_id;
+$apiUrl .= '&order_by='.urlencode('timestamp desc');
+$data = getJsonFromUrl($apiUrl);
+if ($data["success"] && count($data["data"]) > 0) {
+	$tweets = $data["data"];
+	foreach ($tweets as $tweet) {
+		$tweet_info = explode(" ", $tweet["message"]);
+		if (count($tweet_info) == 2 && strcmp($tweet_info[0], "tweet") == 0) {
+			$tweet_id = intval($tweet_info[1]);
+		}
+		
+		$apiUrl = 'http://localhost:'.$_SERVER["SERVER_PORT"]."/api/users/id/{$tweet['author_id']}";
+		$author = getJsonFromUrl($apiUrl);
+		if (!$author["success"]) {
+			// this is weird!
+			echo "There's something wrong! {$tweet['author_id']} is unknown<br/>";
+			continue;
+		}
+	
+		$author = $author["data"];
+		
+		$tweetUrl = "{$author['user_ip']}:{$_SERVER['SERVER_PORT']}/apps/$app_id/gettweet.php?tweet_id=$tweet_id";
+		//echo "<h3>$tweetUrl</h3>";
+		$tweet = getJsonFromUrl($tweetUrl);
+		if ($tweet["success"]) {
+			$tweet = $tweet["data"];
+?>
+		<div class="tweet pure-g">
+			<div class="pure-u">
+				<img class="profile-pic" alt="<?php echo $author['user_name']; ?>" src="" height="64" width="64" />
+			</div>
+
+			<div class="pure-u-3-4">
+				<h5 class="tweet-name"><?php echo $author['user_name']; ?></h5>
+				<p class="tweet-message">
+					<?php echo $tweet["tweet_message"]; ?>
+				</p>
+			</div>
+		</div>
+<?php
+		}
+		else {
+			echo "There's something wrong! tweet id $tweet_id can't be retrieved";
+		}
+	}
+}
+?>
+	
+	</div>
+</body>
+</html>

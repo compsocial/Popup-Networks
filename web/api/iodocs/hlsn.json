@@ -1,0 +1,699 @@
+{
+	"endpoints": [
+		{
+			"name": "Apps API",
+			"methods": [
+				{
+					"MethodName": "apps",
+					"Synopsis": "Retrieve a list of installed application",
+					"HTTPMethod": "GET",
+					"URI": "/apps",
+					"RequiresOAuth": "N",
+					"parameters": [
+					]
+				}, 
+				{
+					"MethodName": "apps",
+					"Synopsis": "Add a new application to database (request must be from localhost)",
+					"HTTPMethod": "POST",
+					"URI": "/apps",
+					"RequiresOAuth": "N",
+					"parameters": [
+						{
+							"Name": "app_id",
+							"Required": "Y",
+							"Default": "",
+							"Type": "String",
+							"Description": "Unique app_id for the new application"
+						}, 
+						{
+							"Name": "app_short_name",
+							"Required": "Y",
+							"Default": "",
+							"Type": "String",
+							"Description": "Short name for the new application"
+						}, 
+						{
+							"Name": "app_description",
+							"Required": "Y",
+							"Default": "",
+							"Type": "String",
+							"Description": "Long description for the new application"
+						}, 
+						{
+							"Name": "app_version",
+							"Required": "Y",
+							"Default": "",
+							"Type": "String",
+							"Description": "Version of the new application"
+						}, 
+						{
+							"Name": "app_build_date",
+							"Required": "Y",
+							"Default": "",
+							"Type": "String",
+							"Description": "Built date of the new application, in the format of YYYY-MM-DD HH:MM:SS"
+						}
+					]
+				},
+				{
+					"MethodName": "app by ID",
+					"Synopsis": "Get application information by application ID",
+					"HTTPMethod": "GET",
+					"URI": "/apps/id/:app_id",
+					"RequiresOAuth": "N",
+					"parameters": [
+						{
+							"Name": "app_id",
+							"Required": "Y",
+							"Default": "",
+							"Type": "String",
+							"Description": "ID of application"
+						}
+					]
+				}
+			]
+		}, 
+		{
+			"name": "Application Message API",
+			"methods": [
+				{
+					"MethodName": "message",
+					"Synopsis": "Retrive a list of messages for a specific application, given that the request IP address has authorization to retrieve the messages",
+					"HTTPMethod": "GET",
+					"URI": "/apps/message",
+					"RequiresOAuth": "N",
+					"parameters": [
+						{
+							"Name": "app_id",
+							"Required": "Y",
+							"Default": "",
+							"Type": "String",
+							"Description": "Application ID of the messages"
+						}, 
+						{
+							"Name": "message_id",
+							"Required": "N",
+							"Default": "",
+							"Type": "integer",
+							"Description": "ID of a specific message"
+						}, 
+						{
+							"Name": "author_id",
+							"Required": "N",
+							"Default": "",
+							"Type": "String",
+							"Description": "ID of the author of messages"
+						}, 
+						{
+							"Name": "order_by",
+							"Required": "N",
+							"Default": "",
+							"Type": "enumerated",
+							"EnumeratedList": [
+								"author_id", 
+								"author_id DESC", 
+								"message", 
+								"message DESC",
+								"timestamp", 
+								"timestamp DESC"
+							], 
+							"EnumeratedDescription": {
+								"author_id": "alphabetical order by author_id", 
+								"author_id DESC": "alphabetical order by author_id", 
+								"message": "alphabetical by message content", 
+								"message DESC": "reverse alphabetical by message content", 
+								"timestamp": "chronological order by timestamp of messages (old to new)",
+								"timestamp DESC": "reverse chronological order by timestamp of messages (old to new)"
+							}, 
+							"Description": "SQL tag for specific ordering of results"
+						}
+					]
+				}, 
+				{
+					"MethodName": "message",
+					"Synopsis": "Post a message to the endpoint",
+					"HTTPMethod": "POST",
+					"URI": "/apps/message",
+					"RequiresOAuth": "N",
+					"parameters": [
+						{
+							"Name": "app_id",
+							"Required": "Y",
+							"Default": "",
+							"Type": "String",
+							"Description": "ID of the application that the message is for"
+						}, 
+						{
+							"Name": "author_id",
+							"Required": "Y",
+							"Default": "",
+							"Type": "String",
+							"Description": "ID of the author of the message"
+						}, 
+						{
+							"Name": "message",
+							"Required": "Y",
+							"Default": "",
+							"Type": "String",
+							"Description": "Content of the message"
+						}, 
+						{
+							"Name": "recipients",
+							"Required": "Y",
+							"Default": "",
+							"Type": "String",
+							"Description": "Recipients of the message, separated by commas (,)"
+						}
+					]
+				},
+				{
+					"MethodName": "public message",
+					"Synopsis": "Retrive a list of public messages for a specific application",
+					"HTTPMethod": "GET",
+					"URI": "/apps/publicmessage",
+					"RequiresOAuth": "N",
+					"parameters": [
+						{
+							"Name": "app_id",
+							"Required": "Y",
+							"Default": "",
+							"Type": "String",
+							"Description": "Application ID of the messages"
+						}, 
+						{
+							"Name": "author_id",
+							"Required": "N",
+							"Default": "",
+							"Type": "String",
+							"Description": "ID of the author of messages"
+						}, 
+						{
+							"Name": "order_by",
+							"Required": "N",
+							"Default": "",
+							"Type": "enumerated",
+							"EnumeratedList": [
+								"author_id", 
+								"author_id DESC", 
+								"message", 
+								"message DESC",
+								"timestamp", 
+								"timestamp DESC"
+							], 
+							"EnumeratedDescription": {
+								"author_id": "alphabetical order by author_id", 
+								"author_id DESC": "alphabetical order by author_id", 
+								"message": "alphabetical by message content", 
+								"message DESC": "reverse alphabetical by message content", 
+								"timestamp": "chronological order by timestamp of messages (old to new)",
+								"timestamp DESC": "reverse chronological order by timestamp of messages (old to new)"
+							}, 
+							"Description": "SQL tag for specific ordering of results"
+						}
+					]
+				}
+			]
+		}, 
+		{
+			"name": "Users API", 
+			"methods": [
+				{
+					"MethodName": "users",
+					"Synopsis": "Retrieve a list of known users",
+					"HTTPMethod": "GET",
+					"URI": "/users",
+					"RequiresOAuth": "N",
+					"parameters": [
+					]
+				}, 
+				{
+					"MethodName": "users",
+					"Synopsis": "Add a new users to the list of known users",
+					"HTTPMethod": "POST",
+					"URI": "/",
+					"RequiresOAuth": "N",
+					"parameters": [
+						{
+							"Name": "user_id",
+							"Required": "Y",
+							"Default": "",
+							"Type": "String",
+							"Description": "ID of the new user"
+						}, 
+						{
+							"Name": "user_name",
+							"Required": "Y",
+							"Default": "",
+							"Type": "String",
+							"Description": "Full name of the user"
+						}, 
+						{
+							"Name": "user_ip",
+							"Required": "Y",
+							"Default": "",
+							"Type": "String",
+							"Description": "IP Address of the user"
+						}, 
+						{
+							"Name": "join_date",
+							"Required": "Y",
+							"Default": "",
+							"Type": "String",
+							"Description": "The date when the user joined the network in YYYY-MM-DD HH:MM:SS format"
+						}, 
+						{
+							"Name": "user_email",
+							"Required": "Y",
+							"Default": "",
+							"Type": "String",
+							"Description": "User's email address"
+						}, 
+						{
+							"Name": "user_bio",
+							"Required": "Y",
+							"Default": "",
+							"Type": "String",
+							"Description": "Description of the user"
+						}, 
+						{
+							"Name": "user_picture_path",
+							"Required": "Y",
+							"Default": "",
+							"Type": "String",
+							"Description": "Relative path to user's IP address of the user's profile picture"
+						}
+					]
+				},
+				{
+					"MethodName": "user_id",
+					"Synopsis": "Retrieve the user information by user ID",
+					"HTTPMethod": "GET",
+					"URI": "/users/id/:user_id",
+					"RequiresOAuth": "N",
+					"parameters": [
+						{
+							"Name": "user_id",
+							"Required": "Y",
+							"Default": "",
+							"Type": "String",
+							"Description": "ID of a user"
+						}
+					]
+				}, 
+				{
+					"MethodName": "nearby",
+					"Synopsis": "Retrieve a list of nearby (known and unknown) users",
+					"HTTPMethod": "GET",
+					"URI": "/users/nearby/:option",
+					"RequiresOAuth": "N",
+					"parameters": [
+						{
+							"Name": "option",
+							"Required": "N",
+							"Default": "all",
+							"Type": "enumerated",
+							"EnumeratedList": [
+								"all", 
+								"known", 
+								"unknown"
+							], 
+							"EnumeratedDescription": {
+								"all": "all users, known and unknown", 
+								"known": "only known users (more info can be retrieved from user_id api)", 
+								"unknown": "only unknown users"
+							}, 
+							"Description": "Option of nearby users"
+						}
+					]
+				}, 
+				{
+					"MethodName": "me",
+					"Synopsis": "Retrieve information about the user at the endpoint",
+					"HTTPMethod": "GET",
+					"URI": "/users/me",
+					"RequiresOAuth": "N",
+					"parameters": [
+					]
+				}, 
+				{
+					"MethodName": "me",
+					"Synopsis": "Update information about the user at the endpoint (request must be from localhost)",
+					"HTTPMethod": "POST",
+					"URI": "/users/me",
+					"RequiresOAuth": "N",
+					"parameters": [
+						{
+							"Name": "user_id",
+							"Required": "Y",
+							"Default": "",
+							"Type": "String",
+							"Description": "ID of the user"
+						}, 
+						{
+							"Name": "user_name",
+							"Required": "Y",
+							"Default": "",
+							"Type": "String",
+							"Description": "Full name of the user"
+						}, 
+						{
+							"Name": "user_email",
+							"Required": "Y",
+							"Default": "",
+							"Type": "String",
+							"Description": "User's email address"
+						}, 
+						{
+							"Name": "user_bio",
+							"Required": "Y",
+							"Default": "",
+							"Type": "String",
+							"Description": "Description of the user"
+						}, 
+						{
+							"Name": "user_picture_path",
+							"Required": "Y",
+							"Default": "",
+							"Type": "String",
+							"Description": "Relative path to localhost/ of the user's profile picture"
+						}
+					]
+				}
+			]
+		}, 
+		{
+			"name": "Follow API", 
+			"methods": [
+				{
+					"MethodName": "following users",
+					"Synopsis": "Retrieve a list of users that the user at endpoint is following for a specific application",
+					"HTTPMethod": "GET",
+					"URI": "/following/users",
+					"RequiresOAuth": "N",
+					"parameters": [
+						{
+							"Name": "app_id",
+							"Required": "Y",
+							"Default": "",
+							"Type": "String",
+							"Description": "ID of the application"
+						}
+					]
+				}, 
+				{
+					"MethodName": "following users",
+					"Synopsis": "Add a user to the list of following users in a specific application context",
+					"HTTPMethod": "POST",
+					"URI": "/following/users",
+					"RequiresOAuth": "N",
+					"parameters": [
+						{
+							"Name": "app_id",
+							"Required": "Y",
+							"Default": "",
+							"Type": "String",
+							"Description": "ID of the application"
+						}, 
+						{
+							"Name": "following_id",
+							"Required": "Y",
+							"Default": "",
+							"Type": "String",
+							"Description": "ID of the user to follow (must be in users table)"
+						}
+					]
+				}, 
+                {
+                    "MethodName": "followers", 
+                    "Synopsis": "Retrieve a list of users that follow the user at endpoint for a specific application",
+                    "HTTPMethod": "GET",
+					"URI": "/follower/users",
+					"RequiresOAuth": "N",
+					"parameters": [
+						{
+							"Name": "app_id",
+							"Required": "Y",
+							"Default": "",
+							"Type": "String",
+							"Description": "ID of the application"
+						}
+					]
+                }, 
+                {
+					"MethodName": "follower",
+					"Synopsis": "Add a user to the list of followers in a specific application context",
+					"HTTPMethod": "POST",
+					"URI": "/follower/users",
+					"RequiresOAuth": "N",
+					"parameters": [
+						{
+							"Name": "app_id",
+							"Required": "Y",
+							"Default": "",
+							"Type": "String",
+							"Description": "ID of the application"
+						}, 
+						{
+							"Name": "following_id",
+							"Required": "Y",
+							"Default": "",
+							"Type": "String",
+							"Description": "ID of the new follower (must be in users table)"
+						}
+					]
+				}
+			]
+		}, 
+        {
+            "name": "Proxy API", 
+            "methods": [
+                {
+                    "MethodName": "image", 
+                    "Synopsis": "Retrieve an image from a url, using the endpoint as a proxy", 
+                    "HTTPMethod": "GET", 
+                    "URI": "/img/:url",
+                    "RequiresOAuth": "N",
+                    "parameters": [
+                        {
+                            "Name": "url", 
+                            "Required": "Y", 
+                            "Default": "", 
+                            "Type": "String", 
+                            "Description": "URL encoded of the URL of the image"
+                        }
+                    ]
+                }
+            ]
+        }, 
+        {
+        	"name": "Vouch API", 
+        	"methods": [
+        		{
+        			"MethodName": "vouch for",
+        			"Synopsis": "Retrieve a list of all users that the endpoint vouched for", 
+        			"HTTPMethod": "GET",
+        			"URI": "/vouchfor", 
+        			"RequiresOAuth": "N",
+        			"parameters": [
+        			]
+        		},
+        		{
+        			"MethodName": "vouch for",
+        			"Synopsis": "Send a vouch request", 
+        			"HTTPMethod": "POST",
+        			"URI": "/vouchfor", 
+        			"RequiresOAuth": "N",
+        			"parameters": [
+        				{
+        					"Name": "user_id",
+							"Required": "Y",
+							"Default": "",
+							"Type": "String",
+							"Description": "The ID of the user who initiate the vouching process"
+        				}, 
+        				{
+        					"Name": "vouch_status",
+							"Required": "Y",
+							"Default": "",
+							"Type": "enumerated",
+							"EnumeratedList": [
+								"notvouch", 
+								"waiting", 
+								"vouched"
+							], 
+							"EnumeratedDescription": {
+								"notvouch": "No vouching process started, initiating the process", 
+								"waiting": "Providing confirmation code (parameter \"code\" required)", 
+								"vouched": "Finishing the vouching process"
+							},
+							"Description": "The status in the vouching process"
+        				}, 
+        				{
+        					"Name": "code",
+							"Required": "N",
+							"Default": "",
+							"Type": "String",
+							"Description": "The confirmation code for the vouching process (required for status \"waiting\")"
+        				}
+        			]
+        		}, 
+        		{
+        			"MethodName": "vouch for by id",
+        			"Synopsis": "Retrieve whether the endpoint vouched for the user with user_id id", 
+        			"HTTPMethod": "GET",
+        			"URI": "/vouchfor/id/:id", 
+        			"RequiresOAuth": "N",
+        			"parameters": [
+        				{
+        					"Name": "id",
+							"Required": "Y",
+							"Default": "",
+							"Type": "String",
+							"Description": "The ID of the user"
+        				}
+        			]
+        		}, 
+        		{
+        			"MethodName": "vouch for status",
+        			"Synopsis": "Retrieve a list of the vouch status of all users", 
+        			"HTTPMethod": "GET",
+        			"URI": "/vouchfor/status", 
+        			"RequiresOAuth": "N",
+        			"parameters": [
+        			]
+        		},
+        		{
+        			"MethodName": "vouch status update",
+        			"Synopsis": "Update the vouch status of a user (request must be from localhost)", 
+        			"HTTPMethod": "POST",
+        			"URI": "/vouchfor/status/update", 
+        			"RequiresOAuth": "N",
+        			"parameters": [
+        				{
+        					"Name": "user_id",
+							"Required": "Y",
+							"Default": "",
+							"Type": "String",
+							"Description": "The ID of the user whose status needs updating"
+        				}, 
+        				{
+        					"Name": "new_vouch_status",
+							"Required": "Y",
+							"Default": "",
+							"Type": "enumerated",
+							"EnumeratedList": [
+								"waiting", 
+								"vouched"
+							], 
+							"EnumeratedDescription": {
+								"waiting": "Initiated the vouching process, waiting for confirmation code", 
+								"vouched": "Confirmation code confirmed"
+							},
+							"Description": "The new status in the vouching process"
+        				}
+        			]
+        		},
+        		{
+        			"MethodName": "vouch for status by id",
+        			"Synopsis": "Retrieve the vouch status for the user with user_id id", 
+        			"HTTPMethod": "GET",
+        			"URI": "/vouchfor/status/id/:id", 
+        			"RequiresOAuth": "N",
+        			"parameters": [
+        				{
+        					"Name": "id",
+							"Required": "Y",
+							"Default": "",
+							"Type": "String",
+							"Description": "The ID of the user"
+        				}
+        			]
+        		},
+        		{
+        			"MethodName": "who vouch for id",
+        			"Synopsis": "Retrieve the list of users who vouched for the user with user_id id", 
+        			"HTTPMethod": "GET",
+        			"URI": "/whovouchfor/id/:id", 
+        			"RequiresOAuth": "N",
+        			"parameters": [
+        				{
+        					"Name": "id",
+							"Required": "Y",
+							"Default": "",
+							"Type": "String",
+							"Description": "The ID of the user"
+        				}
+        			]
+        		},
+				{
+					"MethodName": "vouch code",
+					"Synopsis": "Retrieve confirmation codes for all users who initiated the vouching process (request must be from localhost)",
+					"HTTPMethod": "GET",
+					"URI": "/vouchcode",
+					"RequiresOAuth": "N",
+					"parameters": [
+        			]
+				}
+        	]
+        },
+        {
+        	"name": "Database API", 
+        	"methods": [
+        		{
+        			"MethodName": "database",
+        			"Synopsis": "Retrieve a value stored in the database for a specific key in the application context", 
+        			"HTTPMethod": "GET",
+        			"URI": "/db/:app_id/:key", 
+        			"RequiresOAuth": "N",
+        			"parameters": [
+        				{
+        					"Name": "app_id",
+							"Required": "Y",
+							"Default": "",
+							"Type": "String",
+							"Description": "The ID of the application"
+        				},
+        				{
+        					"Name": "key",
+							"Required": "Y",
+							"Default": "",
+							"Type": "String",
+							"Description": "The key in the database"
+        				}
+        			]
+        		},
+        		{
+        			"MethodName": "database",
+        			"Synopsis": "Store a value in the database for a specific key in the application context, replacing the old value if the key already exists", 
+        			"HTTPMethod": "POST",
+        			"URI": "/db/:app_id/:key", 
+        			"RequiresOAuth": "N",
+        			"parameters": [
+        				{
+        					"Name": "app_id",
+							"Required": "Y",
+							"Default": "",
+							"Type": "String",
+							"Description": "The ID of the application"
+        				},
+        				{
+        					"Name": "key",
+							"Required": "Y",
+							"Default": "",
+							"Type": "String",
+							"Description": "The key in the database"
+        				},
+        				{
+        					"Name": "value",
+							"Required": "Y",
+							"Default": "",
+							"Type": "String",
+							"Description": "The value to be stored"
+        				}
+        			]
+        		}
+        	]
+        }
+	]
+}
