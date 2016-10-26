@@ -9,6 +9,7 @@ System code for Popup Networks accompanying *Popup Networks: Creating Decentrali
 
 ## Configuration
 Inside router/openwrt/sh directory, there are a few scripts that you will need to alter to configure your network:
+
 1. *wireless-config.sh _(required)_*: 
   1. Specify the password for your WiFi connection by replacing *[WiFi_password]* with your password. 
   1. Specify the SSID for your mesh network by replacing *[mesh_5G_ssid]* with your preferred name.
